@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+        <title>Hello World</title>
+    </head>
+    <body>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+
+			
+			$(function() {
+				$( document ).bind( "mobileinit", function() {
+					// Make your jQuery Mobile framework configuration changes here!
+					$.mobile.allowCrossDomainPages = true;
+				});
+
+				$.ajax({
+					url:'http://ajayjohn.com/gp/watch-stock/dailyReport.php',
+					type:'GET',
+					success: function (data) {
+						handleData(jQuery.parseJSON(data))
+					}
+				})
+				
+				function handleData(data) {
+					var html = makeHTML(data);
+					$("#list").html(html);
+				}
+				
+				function makeHTML(data) {
+					var html = '';
+					if(data.length > 0) {
+						html+= '<table>';
+						html+= '<tr><th>Company</th><th>Change (%)</th></tr>';
+						for(var i=0;i<data.length;i++) {
+							html+= '<tr><td>'+data[i]['company_name']+'</td><td>'+data[i]['percent_change']+'</td></tr>'
+						}
+						html+= '</table>';
+					} else {
+						html = "<p class='no_data'>There is nothing to report today.</p>";
+					}
+					
+					return html;
+				}
+			});
+			
+			
+        </script>
+		<div id="list">Loading...</div>
+    </body>
+</html>
